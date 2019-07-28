@@ -13,6 +13,13 @@ class TableView : UITableViewController {
     
     let cellId = "cell"
     
+    let twoDimensionalArray = [
+        ["Ashwini","Anil","Anita","Amar"],
+        ["Babu","Birbal","Basu"],
+        ["Chirag","Chintu","Chandani","Chatur","Chetan"]
+    ]
+        
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Contacts"
@@ -20,18 +27,24 @@ class TableView : UITableViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
     }
     
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let label = UILabel()
+        label.text = "Header"
+        label.backgroundColor = UIColor.blue
+        return label
+    }
     
-    //    override func numberOfSections(in tableView: UITableView) -> Int {
-    //        return 1
-    //    }
+    override func numberOfSections(in tableView: UITableView) -> Int {
+       return  twoDimensionalArray.count
+    }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return twoDimensionalArray[section].count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
-        cell.textLabel?.text = "Hey"
+        cell.textLabel?.text = twoDimensionalArray[indexPath.section][indexPath.row]
         return cell
         
     }
