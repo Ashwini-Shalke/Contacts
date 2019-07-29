@@ -16,7 +16,8 @@ class TableView : UITableViewController {
     let twoDimensionalArray = [
         ["Ashwini","Anil","Anita","Amar"],
         ["Babu","Birbal","Basu"],
-        ["Chirag","Chintu","Chandani","Chatur","Chetan"]
+        ["Chirag","Chintu","Chandani","Chatur","Chetan"],
+        ["Dhiraj","Deepika","Dhanu","Dhanshree"]
     ]
         
     
@@ -30,7 +31,7 @@ class TableView : UITableViewController {
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let label = UILabel()
         label.text = "Header"
-        label.backgroundColor = UIColor.blue
+        label.backgroundColor = UIColor.gray
         return label
     }
     
