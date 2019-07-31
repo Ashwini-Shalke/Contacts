@@ -23,12 +23,13 @@ class TableView : UITableViewController {
     
     @objc func handleShowIndexPath() {
         
-        
-        for index in twoDimensionalArray[0].indices{
-        tableView.reloadRows(at: [indexPath], with: .left)
+        for section in twoDimensionalArray.indices {
+            for row in twoDimensionalArray[section].indices{
+                let indexPath = IndexPath(row: row, section: section)
+                print("Index are \(indexPath)")
+                tableView.reloadRows(at: [indexPath], with: .left)
         }
-//        let indexPath = IndexPath(row: 0, section: 0)
-//        tableView.reloadRows(at: [indexPath], with: .left)
+    }
     }
     
     override func viewDidLoad() {
