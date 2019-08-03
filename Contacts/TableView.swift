@@ -21,15 +21,20 @@ class TableView : UITableViewController {
         ["Manu","Monika","Mansi"]
     ]
     
+    var showIndexPath = false
+    
     @objc func handleShowIndexPath() {
-        
+        var indexpathToReload = [IndexPath]()
         for section in twoDimensionalArray.indices {
             for row in twoDimensionalArray[section].indices{
                 let indexPath = IndexPath(row: row, section: section)
-                print("Index are \(indexPath)")
-                tableView.reloadRows(at: [indexPath], with: .left)
+                indexpathToReload.append(indexPath)
+            }
         }
-    }
+        
+        showIndexPath = !showIndexPath
+        let animationStyle = showIndexPath ? UITableView.RowAnimation.right : .left
+        tableView.reloadRows(at: indexpathToReload, with: animationStyle)
     }
     
     override func viewDidLoad() {
@@ -57,7 +62,15 @@ class TableView : UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
-        cell.textLabel?.text = twoDimensionalArray[indexPath.section][indexPath.row]
+        let name :String = twoDimensionalArray[indexPath.section][indexPath.row]
+        
+        if (showIndexPath) {
+            cell.textLabel?.text = "\(name)   Section \(indexPath.section)   Row \(indexPath.row)"
+        }
+        else {
+            cell.textLabel?.text = name
+        }
+        
         return cell
         
     }
