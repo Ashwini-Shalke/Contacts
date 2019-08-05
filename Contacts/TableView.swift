@@ -13,7 +13,7 @@ class TableView : UITableViewController {
     
     let cellId = "cell"
     
-    let twoDimensionalArray = [
+    var twoDimensionalArray = [
         ["Ashwini","Anil","Anita","Amar"],
         ["Babu","Birbal","Basu"],
         ["Chirag","Chintu","Chandani","Chatur","Chetan"],
@@ -46,10 +46,25 @@ class TableView : UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let label = UILabel()
-        label.text = "Header"
-        label.backgroundColor = UIColor.gray
-        return label
+        let button = UIButton()
+        button.setTitle("Close", for: .normal)
+        button.backgroundColor = UIColor.gray
+        button.setTitleColor(.white, for: .selected)
+        button.tag = section
+        button.addTarget(self, action: #selector(handleExpand), for: .touchUpInside)
+        return button
+    }
+    
+    @objc func handleExpand(button :UIButton)
+    {
+        let section = button.tag
+        var indexPaths = [IndexPath]()
+        for row in twoDimensionalArray[section].indices{
+           let indexpath = IndexPath(row: row, section: section)
+            indexPaths.append(indexpath)
+        }
+        twoDimensionalArray[section].removeAll()
+        tableView.deleteRows(at: indexPaths, with: .fade)
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
