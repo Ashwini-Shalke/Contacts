@@ -21,6 +21,13 @@ class TableView : UITableViewController {
     ]
     
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        navigationItem.title = "Contacts"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "ShowIndexPath", style: .plain, target: self, action: #selector(handleShowIndexPath))
+        navigationController?.navigationBar.prefersLargeTitles = true
+        tableView.register(ContactCell.self, forCellReuseIdentifier: cellId)
+    }
     var showIndexPath = false
     
     @objc func handleShowIndexPath() {
@@ -34,15 +41,9 @@ class TableView : UITableViewController {
         
         showIndexPath = !showIndexPath
         let animationStyle = showIndexPath ? UITableView.RowAnimation.right : .left
-        tableView.reloadRows(at: indexpathToReload, with: animationStyle)
-    }
+        
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        navigationItem.title = "Contacts"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "ShowIndexPath", style: .plain, target: self, action: #selector(handleShowIndexPath))
-        navigationController?.navigationBar.prefersLargeTitles = true
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
+        tableView.reloadRows(at: indexpathToReload, with: animationStyle)
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
