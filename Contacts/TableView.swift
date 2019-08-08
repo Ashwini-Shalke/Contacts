@@ -10,14 +10,20 @@ import Foundation
 import UIKit
 
 class TableView : UITableViewController {
-
+    
     let cellId = "cell"
     
+    func handleStarExecution(cell : UITableViewCell) {
+        guard let cellTapped = tableView.indexPath(for: cell) else { return}
+        let contactName = twoDimensionalArray[cellTapped.section].names[cellTapped.row]
+        print("Selected Name \(contactName)")
+    }
+    
     var twoDimensionalArray = [
-       Expand(isExpanded: true, names: ["Ashwini","Anil","Anita","Amar"]),
-       Expand(isExpanded: true, names: ["Babu","Birbal","Basu"]),
-       Expand(isExpanded: true, names: ["Chirag","Chintu","Chandani","Chatur","Chetan"]),
-       Expand(isExpanded: true, names: ["Dhiraj","Deepika","Dhanu","Dhanshree"])
+        Expand(isExpanded: true, names: ["Ashwini","Anil","Anita","Amar"]),
+        Expand(isExpanded: true, names: ["Babu","Birbal","Basu"]),
+        Expand(isExpanded: true, names: ["Chirag","Chintu","Chandani","Chatur","Chetan"]),
+        Expand(isExpanded: true, names: ["Dhiraj","Deepika","Dhanu","Dhanshree"])
     ]
     
     
@@ -42,7 +48,7 @@ class TableView : UITableViewController {
         showIndexPath = !showIndexPath
         let animationStyle = showIndexPath ? UITableView.RowAnimation.right : .left
         
-    
+        
         tableView.reloadRows(at: indexpathToReload, with: animationStyle)
     }
     
@@ -78,7 +84,7 @@ class TableView : UITableViewController {
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-       return  twoDimensionalArray.count
+        return  twoDimensionalArray.count
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -91,7 +97,11 @@ class TableView : UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ContactCell
+        
+        cell.link = self
+        
         let name :String = twoDimensionalArray[indexPath.section].names [indexPath.row]
         
         if (showIndexPath) {
