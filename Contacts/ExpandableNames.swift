@@ -9,8 +9,12 @@
 import Foundation
 import UIKit
 
-struct Expand {
+struct ExpandNames {
     var isExpanded: Bool
-    var names : [String]
+    var names : [Contact]
 }
 
+struct Contact {
+    var IsFav : Bool
+    var names : String
+}

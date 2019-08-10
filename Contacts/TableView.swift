@@ -11,19 +11,24 @@ import UIKit
 
 class TableView : UITableViewController {
     
+    
     let cellId = "cell"
     
     func handleStarExecution(cell : UITableViewCell) {
         guard let cellTapped = tableView.indexPath(for: cell) else { return}
         let contactName = twoDimensionalArray[cellTapped.section].names[cellTapped.row]
-        print("Selected Name \(contactName)")
+        let hasFavorited = contactName.IsFav
+        twoDimensionalArray[cellTapped.section].names[cellTapped.row].IsFav = !hasFavorited
+        tableView.reloadRows(at: [cellTapped], with: .fade)
+        
     }
     
+    
     var twoDimensionalArray = [
-        Expand(isExpanded: true, names: ["Ashwini","Anil","Anita","Amar"]),
-        Expand(isExpanded: true, names: ["Babu","Birbal","Basu"]),
-        Expand(isExpanded: true, names: ["Chirag","Chintu","Chandani","Chatur","Chetan"]),
-        Expand(isExpanded: true, names: ["Dhiraj","Deepika","Dhanu","Dhanshree"])
+        ExpandNames(isExpanded: true, names: ["Ashwini","Anil","Anita","Amar"].map {Contact(IsFav: false, names: $0)}),
+        ExpandNames(isExpanded: true, names: ["Babu","Birbal","Basu"].map{Contact(IsFav: false, names: $0)}),
+        ExpandNames(isExpanded: true, names: ["Chirag","Chintu","Chandani","Chatur","Chetan"].map {Contact(IsFav: false, names: $0)}),
+        ExpandNames(isExpanded: true, names: ["Dhiraj","Deepika","Dhanu","Dhanshree"].map{ Contact(IsFav: false, names: $0)})
     ]
     
     
@@ -44,11 +49,8 @@ class TableView : UITableViewController {
                 indexpathToReload.append(indexPath)
             }
         }
-        
         showIndexPath = !showIndexPath
         let animationStyle = showIndexPath ? UITableView.RowAnimation.right : .left
-        
-        
         tableView.reloadRows(at: indexpathToReload, with: animationStyle)
     }
     
@@ -97,22 +99,16 @@ class TableView : UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ContactCell
-        
         cell.link = self
-        
-        let name :String = twoDimensionalArray[indexPath.section].names [indexPath.row]
-        
+        let contactName = twoDimensionalArray[indexPath.section].names[indexPath.row]
+        cell.accessoryView?.tintColor = contactName.IsFav ? UIColor.red : .lightGray
         if (showIndexPath) {
-            cell.textLabel?.text = "\(name)   Section \(indexPath.section)   Row \(indexPath.row)"
+            cell.textLabel?.text = "\(contactName.names )   Section \(indexPath.section)   Row \(indexPath.row)"
         }
         else {
-            cell.textLabel?.text = name
+            cell.textLabel?.text = contactName.names
         }
-        
         return cell
-        
     }
-    
 }
