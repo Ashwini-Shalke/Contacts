@@ -8,11 +8,13 @@
 
 import Foundation
 import UIKit
+import Contacts
 
 class TableView : UITableViewController {
     
     
     let cellId = "cell"
+   // var tableView = UITableView()
     
     func handleStarExecution(cell : UITableViewCell) {
         guard let cellTapped = tableView.indexPath(for: cell) else { return}
@@ -20,6 +22,7 @@ class TableView : UITableViewController {
         let hasFavorited = contactName.IsFav
         twoDimensionalArray[cellTapped.section].names[cellTapped.row].IsFav = !hasFavorited
         tableView.reloadRows(at: [cellTapped], with: .fade)
+        
         
     }
     
@@ -32,12 +35,21 @@ class TableView : UITableViewController {
     ]
     
     
+    private func fetchContacts()
+    {
+        //var store = CNContactStore()
+        
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Contacts"
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "ShowIndexPath", style: .plain, target: self, action: #selector(handleShowIndexPath))
         navigationController?.navigationBar.prefersLargeTitles = true
         tableView.register(ContactCell.self, forCellReuseIdentifier: cellId)
+        fetchContacts()
+        
     }
     var showIndexPath = false
     
