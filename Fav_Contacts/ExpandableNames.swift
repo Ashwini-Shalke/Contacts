@@ -8,13 +8,14 @@
 
 import Foundation
 import UIKit
+import Contacts
 
 struct ExpandNames {
     var isExpanded: Bool
-    var names : [Contact]
+    var expnadNames : [FavoriteContact]
 }
 
-struct Contact {
-    var IsFav : Bool
-    var names : String
+struct FavoriteContact {
+    var isFav : Bool
+    var favContactsName : CNContact
 }

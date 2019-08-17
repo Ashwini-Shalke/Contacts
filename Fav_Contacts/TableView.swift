@@ -10,30 +10,33 @@ import Foundation
 import UIKit
 import Contacts
 
+
+
 class TableView : UITableViewController {
     
     
     let cellId = "cell"
-   // var tableView = UITableView()
+    // var tableView = UITableView()
     
     func handleStarExecution(cell : UITableViewCell) {
         guard let cellTapped = tableView.indexPath(for: cell) else { return}
-        let contactName = twoDimensionalArray[cellTapped.section].names[cellTapped.row]
-        let hasFavorited = contactName.IsFav
-        twoDimensionalArray[cellTapped.section].names[cellTapped.row].IsFav = !hasFavorited
+        let contactName = twoDimensionalArray[cellTapped.section].expnadNames[cellTapped.row]
+        let hasFavorited = contactName.isFav
+        twoDimensionalArray[cellTapped.section].expnadNames[cellTapped.row].isFav = !hasFavorited
         tableView.reloadRows(at: [cellTapped], with: .fade)
         
         
     }
     
     
-    var twoDimensionalArray = [
-        ExpandNames(isExpanded: true, names: ["Ashwini","Anil","Anita","Amar"].map {Contact(IsFav: false, names: $0)}),
-        ExpandNames(isExpanded: true, names: ["Babu","Birbal","Basu"].map{Contact(IsFav: false, names: $0)}),
-        ExpandNames(isExpanded: true, names: ["Chirag","Chintu","Chandani","Chatur","Chetan"].map {Contact(IsFav: false, names: $0)}),
-        ExpandNames(isExpanded: true, names: ["Dhiraj","Deepika","Dhanu","Dhanshree"].map{ Contact(IsFav: false, names: $0)})
-    ]
-    
+    var twoDimensionalArray = [ExpandNames]()
+    //    var twoDimensionalArray = [
+    //        ExpandNames(isExpanded: true, names: ["Ashwini","Anil","Anita","Amar"].map {FavoriteContact(IsFav: false, names: $0)}),
+    //        ExpandNames(isExpanded: true, names: ["Babu","Birbal","Basu"].map{FavoriteContact(IsFav: false, names: $0)}),
+    //        ExpandNames(isExpanded: true, names: ["Chirag","Chintu","Chandani","Chatur","Chetan"].map {FavoriteContact(IsFav: false, names: $0)}),
+    //        ExpandNames(isExpanded: true, names: ["Dhiraj","Deepika","Dhanu","Dhanshree"].map{ FavoriteContact(IsFav: false, names: $0)})
+    //    ]
+    //
     
     private func fetchContacts(){
         let store = CNContactStore()
@@ -45,6 +48,24 @@ class TableView : UITableViewController {
             
             if granted {
                 print ("Access granted")
+                let keys =  [CNContactGivenNameKey,CNContactFamilyNameKey,CNContactPhoneNumbersKey]
+                let request = CNContactFetchRequest(keysToFetch: keys as [CNKeyDescriptor])
+                do {
+                    var favoriteContacts = [FavoriteContact]()
+                    try store.enumerateContacts(with: request, usingBlock: { (contact,stopPointerIfYouwantToStopEnumeration) in
+                        print (contact.givenName)
+                        print(contact.familyName)
+                        print(contact.phoneNumbers.first?.value.stringValue ?? " ")
+                        // favoriteContacts.append(FavoriteContact(IsFav: false, names: contact.givenName + " " + contact.familyName))
+                        favoriteContacts.append(FavoriteContact(isFav : false, favContactsName : contact))
+                    })
+                    
+                    let expandNames =  ExpandNames(isExpanded: true, expnadNames: favoriteContacts)
+                    self.twoDimensionalArray = [expandNames]
+                } catch let err {
+                    print ("Failed to enumerateconatcts", err)
+                }
+                
             } else {
                 print ("Access denied")
             }
@@ -67,7 +88,7 @@ class TableView : UITableViewController {
     @objc func handleShowIndexPath() {
         var indexpathToReload = [IndexPath]()
         for section in twoDimensionalArray.indices {
-            for row in twoDimensionalArray[section].names.indices{
+            for row in twoDimensionalArray[section].expnadNames.indices{
                 let indexPath = IndexPath(row: row, section: section)
                 indexpathToReload.append(indexPath)
             }
@@ -91,7 +112,7 @@ class TableView : UITableViewController {
     {
         let section = button.tag
         var indexPaths = [IndexPath]()
-        for row in twoDimensionalArray[section].names.indices{
+        for row in twoDimensionalArray[section].expnadNames.indices{
             let indexpath = IndexPath(row: row, section: section)
             indexPaths.append(indexpath)
         }
@@ -114,7 +135,7 @@ class TableView : UITableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if twoDimensionalArray[section].isExpanded{
-            return twoDimensionalArray[section].names.count
+            return twoDimensionalArray[section].expnadNames.count
         } else {
             return 0
         }
@@ -122,16 +143,17 @@ class TableView : UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ContactCell
+        //let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ContactCell
+        let cell = ContactCell(style: .subtitle, reuseIdentifier: cellId)
         cell.link = self
-        let contactName = twoDimensionalArray[indexPath.section].names[indexPath.row]
-        cell.accessoryView?.tintColor = contactName.IsFav ? UIColor.red : .lightGray
+        let contactDisplayName = twoDimensionalArray[indexPath.section].expnadNames[indexPath.row]
+        cell.accessoryView?.tintColor = contactDisplayName.isFav ? UIColor.red : .lightGray
+        cell.textLabel?.text = contactDisplayName.favContactsName.givenName + " " +  contactDisplayName.favContactsName.familyName
+        cell.detailTextLabel?.text = contactDisplayName.favContactsName.phoneNumbers.first?.value.stringValue
         if (showIndexPath) {
-            cell.textLabel?.text = "\(contactName.names )   Section \(indexPath.section)   Row \(indexPath.row)"
+            cell.textLabel?.text = "\(contactDisplayName.favContactsName )   Section \(indexPath.section)   Row \(indexPath.row)"
         }
-        else {
-            cell.textLabel?.text = contactName.names
-        }
+        
         return cell
     }
 }
