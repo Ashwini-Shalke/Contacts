@@ -35,9 +35,20 @@ class TableView : UITableViewController {
     ]
     
     
-    private func fetchContacts()
-    {
-        //var store = CNContactStore()
+    private func fetchContacts(){
+        let store = CNContactStore()
+        store.requestAccess(for: .contacts) { (granted, err) in
+            if let err = err {
+                print ("Failed to fetch contacts")
+                return
+            }
+            
+            if granted {
+                print ("Access granted")
+            } else {
+                print ("Access denied")
+            }
+        }
         
     }
     
